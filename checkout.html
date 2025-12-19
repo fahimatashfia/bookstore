@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout - StoryStack</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>StoryStack</h1>
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="products.php">Browse Books</a>
+          <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
+          <span id="auth-links">
+            <a href="login.html">Login</a>
+          </span>
+        </nav>
+      </header>
+
+      <main>
+        <h2>Checkout</h2>
+
+        <div
+          id="order-summary"
+          style="
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+          "
+        >
+          <h3>Order Summary</h3>
+          <div id="summary-items"></div>
+          <div
+            style="
+              margin-top: 15px;
+              padding-top: 15px;
+              border-top: 2px solid #bdc3c7;
+            "
+          >
+            <strong style="font-size: 1.3em"
+              >Total: <span id="order-total">$0.00</span></strong
+            >
+          </div>
+        </div>
+
+        <form id="checkout-form" class="checkout-main-form">
+          <div class="form-group">
+            <label for="name">Full Name *</label>
+            <input type="text" id="name" name="name" required />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required readonly />
+          </div>
+
+          <div class="form-group">
+            <label for="address">Shipping Address *</label>
+            <textarea id="address" name="address" required></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            style="width: 100%; padding: 15px; font-size: 1.1em"
+          >
+            Place Order
+          </button>
+        </form>
+      </main>
+
+      <footer>
+        <p>&copy; 2025 StoryStack - Bookstore. All rights reserved.</p>
+      </footer>
+    </div>
+
+    <script>
+      function getCart() {
+        return JSON.parse(localStorage.getItem("cart")) || [];
+      }
+
+      function getUser() {
+        return JSON.parse(localStorage.getItem("user"));
+      }
+
+      function updateCartCount() {
+        const cart = getCart();
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        document.getElementById("cart-count").textContent = totalItems;
+      }
+
+      function updateAuthLinks() {
+        const user = getUser();
+        const authLinks = document.getElementById("auth-links");
+
+        if (user) {
+          authLinks.innerHTML = `
+                    <span style="color: white; margin-right: 10px;">${user.email}</span>
+                    <a href="#" onclick="logout(); return false;">Logout</a>
+                `;
+          document.getElementById("email").value = user.email;
+        } else {
+          authLinks.innerHTML = '<a href="login.html">Login</a>';
+        }
+      }
+
+      function logout() {
+        localStorage.removeItem("user");
+        window.location.href = "php/logout.php";
+      }
+
+      function checkAuth() {
+        const user = getUser();
+        if (!user) {
+          alert("Please login to place order");
+          localStorage.setItem("redirectAfterLogin", "checkout.html");
+          window.location.href = "login.html";
+          return false;
+        }
+        return true;
+      }
+
+      function displayOrderSummary() {
+        const cart = getCart();
+
+        if (cart.length === 0) {
+          window.location.href = "cart.html";
+          return;
+        }
+
+        let html = "";
+        let total = 0;
+
+        cart.forEach((item) => {
+          const itemTotal = item.price * item.quantity;
+          total += itemTotal;
+          html += `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>${item.title} (x${item.quantity})</span>
+                        <span>$${itemTotal.toFixed(2)}</span>
+                    </div>
+                `;
+        });
+
+        document.getElementById("summary-items").innerHTML = html;
+        document.getElementById("order-total").textContent =
+          "$" + total.toFixed(2);
+      }
+
+      // Handle form submission
+      document
+        .getElementById("checkout-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          if (!checkAuth()) {
+            return;
+          }
+
+          const cart = getCart();
+          const user = getUser();
+          const formData = new FormData(this);
+
+          const orderData = {
+            user_id: user.id,
+            customer_name: formData.get("name"),
+            email: user.email,
+            address: formData.get("address"),
+            items: cart,
+            total: cart.reduce(
+              (sum, item) => sum + item.price * item.quantity,
+              0
+            ),
+          };
+
+          try {
+            const response = await fetch("php/process_order.php", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(orderData),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              // Save order ID and clear cart
+              localStorage.setItem("lastOrderId", result.order_id);
+              localStorage.removeItem("cart");
+              window.location.href = "success.html";
+            } else {
+              alert("Order failed: " + result.message);
+            }
+          } catch (error) {
+            alert("An error occurred. Please try again.");
+            console.error("Error:", error);
+          }
+        });
+
+      // Initialize
+      if (!checkAuth()) {
+        // Will redirect to login
+      } else {
+        updateCartCount();
+        updateAuthLinks();
+        displayOrderSummary();
+      }
+    </script>
+  </body>
+</html>
