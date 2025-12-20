@@ -1,215 +1,280 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Checkout - StoryStack</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="container">
-      <header>
-        <h1>StoryStack</h1>
-        <nav>
-          <a href="index.html">Home</a>
-          <a href="products.php">Browse Books</a>
-          <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
-          <span id="auth-links">
-            <a href="login.html">Login</a>
-          </span>
-        </nav>
-      </header>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StoryStack Checkout</title>
 
-      <main>
-        <h2>Checkout</h2>
+<!-- HEADER & NAV STYLE (FROM style.css ONLY) -->
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:Arial,sans-serif;line-height:1.6;color:#333;background:#f4f4f4;}
+.container{min-height:100vh;display:flex;flex-direction:column;background:#fff;}
+header{background:#2c3e50;color:#fff;padding:20px 40px;}
+header h1{margin-bottom:15px;}
+nav{display:flex;align-items:center;gap:20px;}
+nav a{color:#fff;text-decoration:none;padding:8px 15px;border-radius:4px;}
+nav a:hover{background:#34495e;}
+.auth-nav{margin-left:auto;display:flex;gap:10px;}
+main{flex:1;}
+</style>
 
-        <div
-          id="order-summary"
-          style="
-            background-color: #ecf0f1;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-          "
-        >
-          <h3>Order Summary</h3>
-          <div id="summary-items"></div>
-          <div
-            style="
-              margin-top: 15px;
-              padding-top: 15px;
-              border-top: 2px solid #bdc3c7;
-            "
-          >
-            <strong style="font-size: 1.3em"
-              >Total: <span id="order-total">$0.00</span></strong
-            >
-          </div>
-        </div>
+<!-- 🔒 ORIGINAL CHECKOUT STYLE (UNCHANGED) -->
+<style>
+body {
+    margin:0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+}
+.header {
+    padding: 30px;
+    text-align: center;
+    color: #fff;
+    background: linear-gradient(135deg,#6a11cb,#2575fc);
+    font-size: 28px;
+    letter-spacing:1px;
+}
+.page {
+    width: 450px;
+    background: #fff;
+    border-radius: 15px;
+    padding: 25px;
+    margin: 30px auto;
+    box-shadow:0 10px 20px rgba(0,0,0,.1);
+}
+.cart-summary-item, .receipt-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+.total-price {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px;
+    text-align: right;
+}
+input, textarea {
+    width:100%;
+    padding: 8px;
+    margin:5px 0;
+    border-radius:6px;
+    border:1px solid #ccc;
+    font-size:14px;
+}
+button {
+    padding:12px 20px;
+    margin-top:10px;
+    width:100%;
+    border:none;
+    border-radius:25px;
+    cursor:pointer;
+    color:#fff;
+    font-size:16px;
+}
+.confirm-btn { background: linear-gradient(135deg,#2ecc71,#27ae60); }
+.back-btn { background: linear-gradient(135deg,#ff512f,#dd2476); }
+.add-more-btn { background: linear-gradient(135deg,#ff6a00,#ff9f43); }
+.success-text { font-size:22px; color:#2ecc71; font-weight:bold; margin:15px 0; text-align:center; }
+.terms { background:#f1f1f1; padding:15px; border-radius:10px; font-size:14px; max-height:250px; overflow-y:auto; }
+.truck{position:relative;width:120px;height:60px;margin:20px auto;background:#3498db;border-radius:12px;animation:drive 5s linear forwards;}
+.wheel{width:20px;height:20px;background:#000;border-radius:50%;position:absolute;bottom:-10px;}
+.wheel.left{left:10px;} .wheel.right{right:10px;}
+@keyframes drive{0%{left:-150px;}100%{left:550px;}}
+.flower{position:absolute;width:25px;height:25px;background:radial-gradient(circle,#ff6b6b,#ffe66d);border-radius:50%;animation:fall 5s linear infinite;}
+@keyframes fall{0%{transform:translateY(-50px) rotate(0deg);}100%{transform:translateY(500px) rotate(360deg);}}
+</style>
+</head>
 
-        <form id="checkout-form" class="checkout-main-form">
-          <div class="form-group">
-            <label for="name">Full Name *</label>
-            <input type="text" id="name" name="name" required />
-          </div>
+<body>
+<div class="container">
 
-          <div class="form-group">
-            <label for="email">Email *</label>
-            <input type="email" id="email" name="email" required readonly />
-          </div>
+<!-- ✅ HEADER + NAV (ONLY ADDITION) -->
+<header>
+  <h1>StoryStack</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="products.html">Books</a>
+    <a href="cart.html">Cart</a>
+    <div class="auth-nav">
+      <a href="login.html">Login</a>
+      <a href="logout.html">Logout</a>
+    </div>
+  </nav>
+</header>
+<main class="welcome-section">
+  <h1>🛒 Checkout</h1>
+      
+</main>
 
-          <div class="form-group">
-            <label for="address">Shipping Address *</label>
-            <textarea id="address" name="address" required></textarea>
-          </div>
 
-          <button
-            type="submit"
-            class="btn btn-primary"
-            style="width: 100%; padding: 15px; font-size: 1.1em"
-          >
-            Place Order
-          </button>
-        </form>
-      </main>
 
-      <footer>
-        <p>&copy; 2025 StoryStack - Bookstore. All rights reserved.</p>
-      </footer>
+
+
+
+<!-- CART SUMMARY PAGE -->
+<div class="page" id="cartPage">
+    <h2>Order Summary</h2>
+    <div id="summaryItems"></div>
+    <div class="total-price">Total: $<span id="orderTotal">0.00</span></div>
+    <button class="confirm-btn" onclick="goCheckout()">✅ Next </button><br>
+    <button class="add-more-btn" onclick="goBack()">🏠 Back to Store</button>
+</div>
+
+<!-- CHECKOUT FORM -->
+<div class="page" id="checkoutPage" style="display:none;">
+    <h2>Checkout Details</h2>
+    <input type="text" id="custName" placeholder="Full Name" required>
+    <input type="email" id="custEmail" placeholder="Email" required readonly>
+    <textarea id="custAddress" placeholder="Shipping Address" rows="4" required></textarea>
+    <button class="confirm-btn" onclick="showReceipt()">Next: Review Order</button><br>
+    <button class="back-btn" onclick="backToCart()">⬅ Back to Summary</button>
+</div>
+
+<!-- RECEIPT -->
+<div class="page" id="receiptPage" style="display:none;">
+    <h2>🧾 Order Receipt</h2>
+    <div><b>Name:</b> <span id="rName"></span></div>
+    <div><b>Email:</b> <span id="rEmail"></span></div>
+    <div><b>Address:</b> <span id="rAddress"></span></div>
+    <hr>
+    <div id="receiptItems"></div>
+    <div class="total-price">Total: $<span id="rTotal"></span></div>
+    <h3>Proceed to Terms & Conditions</h3>
+    <button class="confirm-btn" onclick="showTerms()">📜 Terms & Conditions</button><br>
+    <button class="back-btn" onclick="backToCheckout()">⬅ Back</button>
+</div>
+
+<!-- TERMS & CONDITIONS -->
+<div class="page" id="termsPage" style="display:none;">
+    <h2>📜 Terms & Conditions</h2>
+    <div class="terms">
+        <p>1. All orders are subject to availability.</p>
+        <p>2. Payment must be completed to confirm your order.</p>
+        <p>3. Delivery times may vary depending on location.</p>
+        <p>4. Prices are inclusive of applicable taxes.</p>
+        <p>5. Refunds can be requested within 7 days of delivery.</p>
+    </div>
+    <button class="confirm-btn" id="acceptTermsBtn">✅ Confirm & Place Order</button><br>
+    <button class="back-btn" onclick="backToReceiptFromTerms()">⬅ Back</button>
+</div>
+
+<!-- SUCCESS -->
+<div class="page" id="successPage" style="display:none;position:relative;overflow:hidden;">
+    <h2 class="success-text">✅ Order Successful!</h2>
+    <p>Thank you for shopping with StoryStack 📚</p>
+    <p>A confirmation email has been sent to your email address.</p>
+    <p>Your books will be shipped within 3–5 working days.</p>
+
+    <div class="truck">
+        <div class="wheel left"></div>
+        <div class="wheel right"></div>
     </div>
 
-    <script>
-      function getCart() {
-        return JSON.parse(localStorage.getItem("cart")) || [];
-      }
+    <button class="add-more-btn" onclick="restart()">🏠 Back to Store</button>
+</div>
 
-      function getUser() {
-        return JSON.parse(localStorage.getItem("user"));
-      }
+</main>
+</div>
 
-      function updateCartCount() {
-        const cart = getCart();
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        document.getElementById("cart-count").textContent = totalItems;
-      }
+<!-- 🔒 ORIGINAL SCRIPT (UNCHANGED) -->
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let user = JSON.parse(localStorage.getItem("user")) || null;
 
-      function updateAuthLinks() {
-        const user = getUser();
-        const authLinks = document.getElementById("auth-links");
+const cartPage = document.getElementById("cartPage");
+const checkoutPage = document.getElementById("checkoutPage");
+const receiptPage = document.getElementById("receiptPage");
+const termsPage = document.getElementById("termsPage");
+const successPage = document.getElementById("successPage");
 
-        if (user) {
-          authLinks.innerHTML = `
-                    <span style="color: white; margin-right: 10px;">${user.email}</span>
-                    <a href="#" onclick="logout(); return false;">Logout</a>
-                `;
-          document.getElementById("email").value = user.email;
-        } else {
-          authLinks.innerHTML = '<a href="login.html">Login</a>';
-        }
-      }
+function goBack(){ window.location.href="index.html"; }
 
-      function logout() {
-        localStorage.removeItem("user");
-        window.location.href = "php/logout.php";
-      }
+function showCartSummary(){
+    const summaryDiv = document.getElementById("summaryItems");
+    let total = 0;
+    if(cart.length===0){ alert("Cart is empty"); window.location.href="cart.html"; return;}
+    summaryDiv.innerHTML = "";
+    cart.forEach(item=>{
+        const div = document.createElement("div");
+        div.className = "cart-summary-item";
+        div.innerHTML = `<span>${item.title} (x${item.quantity})</span>
+        <span>$${(item.price*item.quantity).toFixed(2)}</span>`;
+        summaryDiv.appendChild(div);
+        total += item.price*item.quantity;
+    });
+    document.getElementById("orderTotal").innerText = total.toFixed(2);
+}
 
-      function checkAuth() {
-        const user = getUser();
-        if (!user) {
-          alert("Please login to place order");
-          localStorage.setItem("redirectAfterLogin", "checkout.html");
-          window.location.href = "login.html";
-          return false;
-        }
-        return true;
-      }
+function goCheckout(){
+    if(!user){ alert("Please login first"); window.location.href="login.html"; return; }
+    cartPage.style.display="none";
+    checkoutPage.style.display="block";
+    custEmail.value = user.email;
+    custName.value = user.name || "";
+}
 
-      function displayOrderSummary() {
-        const cart = getCart();
+function backToCart(){
+    checkoutPage.style.display="none";
+    cartPage.style.display="block";
+}
 
-        if (cart.length === 0) {
-          window.location.href = "cart.html";
-          return;
-        }
+function showReceipt(){
+    if(!custName.value || !custAddress.value){ alert("Fill all fields"); return; }
+    checkoutPage.style.display="none";
+    receiptPage.style.display="block";
+    rName.innerText = custName.value;
+    rEmail.innerText = custEmail.value;
+    rAddress.innerText = custAddress.value;
 
-        let html = "";
-        let total = 0;
+    receiptItems.innerHTML="";
+    let total=0;
+    cart.forEach(item=>{
+        receiptItems.innerHTML += `<div class="receipt-item">
+        <span>${item.title} x ${item.quantity}</span>
+        <span>$${(item.price*item.quantity).toFixed(2)}</span></div>`;
+        total+=item.price*item.quantity;
+    });
+    rTotal.innerText=total.toFixed(2);
+}
 
-        cart.forEach((item) => {
-          const itemTotal = item.price * item.quantity;
-          total += itemTotal;
-          html += `
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <span>${item.title} (x${item.quantity})</span>
-                        <span>$${itemTotal.toFixed(2)}</span>
-                    </div>
-                `;
-        });
+function backToCheckout(){
+    receiptPage.style.display="none";
+    checkoutPage.style.display="block";
+}
 
-        document.getElementById("summary-items").innerHTML = html;
-        document.getElementById("order-total").textContent =
-          "$" + total.toFixed(2);
-      }
+function showTerms(){
+    receiptPage.style.display="none";
+    termsPage.style.display="block";
+}
 
-      // Handle form submission
-      document
-        .getElementById("checkout-form")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
+function backToReceiptFromTerms(){
+    termsPage.style.display="none";
+    receiptPage.style.display="block";
+}
 
-          if (!checkAuth()) {
-            return;
-          }
+function showSuccess(){
+    termsPage.style.display="none";
+    successPage.style.display="block";
+    localStorage.removeItem("cart");
+    createFlowers();
+}
 
-          const cart = getCart();
-          const user = getUser();
-          const formData = new FormData(this);
+function restart(){ window.location.href="index.html"; }
 
-          const orderData = {
-            user_id: user.id,
-            customer_name: formData.get("name"),
-            email: user.email,
-            address: formData.get("address"),
-            items: cart,
-            total: cart.reduce(
-              (sum, item) => sum + item.price * item.quantity,
-              0
-            ),
-          };
+function createFlowers(){
+    for(let i=0;i<20;i++){
+        let f=document.createElement("div");
+        f.className="flower";
+        f.style.left=Math.random()*400+'px';
+        f.style.animationDuration=(3+Math.random()*2)+'s';
+        successPage.appendChild(f);
+    }
+}
 
-          try {
-            const response = await fetch("php/process_order.php", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(orderData),
-            });
+showCartSummary();
+document.getElementById("acceptTermsBtn").addEventListener("click", showSuccess);
+</script>
 
-            const result = await response.json();
-
-            if (result.success) {
-              // Save order ID and clear cart
-              localStorage.setItem("lastOrderId", result.order_id);
-              localStorage.removeItem("cart");
-              window.location.href = "success.html";
-            } else {
-              alert("Order failed: " + result.message);
-            }
-          } catch (error) {
-            alert("An error occurred. Please try again.");
-            console.error("Error:", error);
-          }
-        });
-
-      // Initialize
-      if (!checkAuth()) {
-        // Will redirect to login
-      } else {
-        updateCartCount();
-        updateAuthLinks();
-        displayOrderSummary();
-      }
-    </script>
-  </body>
+</body>
 </html>
