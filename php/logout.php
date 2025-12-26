@@ -1,5 +1,4 @@
 <?php
-// Start session if using session based login
 session_start();
 
 // Remove user from session if exists

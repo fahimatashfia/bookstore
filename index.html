@@ -1,119 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>StoryStack</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
+ <head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>StoryStack</title>
+   <link rel="stylesheet" href="style.css" />
+   <link
+     rel="stylesheet"
+     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+   />
+   <link rel="preconnect" href="https://fonts.googleapis.com" />
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+   <link
+     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;500;600;700&display=swap"
+     rel="stylesheet"
+   />
+ </head>
+ <body>
+   <div class="container">
+     <header>
+       <div class="navbar">
+         <div class="logo">
+           <i class="fas fa-book-open"></i>
+           <h1>StoryStack</h1>
+         </div>
+         <nav class="nav-links">
+           <a href="index.html" class="nav-link active">
+             <i class="fas fa-home"></i>
+             <span>Home</span>
+           </a>
+           <a href="products.php" class="nav-link">
+             <i class="fas fa-book"></i>
+             <span>Browse Books</span>
+           </a>
+           <a href="cart.html" class="nav-link cart-link">
+             <i class="fas fa-shopping-cart"></i>
+             <span>Cart</span>
+             <span class="cart-badge" id="cart-count">0</span>
+           </a>
+         </nav>
 
-<body>
-  <div class="container">
-    <header>
-      <h1>StoryStack</h1>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="products.php">Browse Books</a>
-        <a href="cart.html">
-          Cart (<span id="cart-count">0</span>)
-        </a>
 
-        
-        <div id="auth-links" class="auth-nav">
-          <a href="about.html">About Us</a>
-          <span class="nav-divider">|</span>
-          <a href="login.html">Login</a>
-          <span class="nav-divider">|</span>
-          <a href="signup.html">Sign Up</a>
-        </div>
-      </nav>
-    </header>
+         <div id="auth-links" class="auth-nav">
+           <a href="about.html" class="nav-link">About Us</a>
+           <span class="nav-divider">|</span>
+           <a href="login.html" class="nav-link">Login</a>
+           <span class="nav-divider">|</span>
+           <a href="signup.html" class="btn-signup">Sign Up</a>
+         </div>
+       </div>
+     </header>
 
-    <main class="welcome-section">
-      <img src="images/HeroBook.jpg" alt="Hero Book" />
-      <div class="hero-content">
-        <h2>Welcome to StoryStack!</h2>
-        <p>
-          Discover your next favorite book from our carefully curated
-          collection.
-        </p>
-        <p>
-          We offer a wide range of books across various genres including
-          Fiction, Non-Fiction, Mystery, and Self-Help.
-        </p>
 
-        <div class="cta-section">
-          <a href="products.php" class="btn btn-primary">
-            Browse Our Collection
-          </a>
-        </div>
+     <main>
+       <!-- Hero Section with Full-width Image -->
+       <section class="hero-section">
+         <div class="hero-image-container">
+           <img src="images/HeroBook.jpg" alt="Hero Book" class="hero-image" />
+           <div class="hero-overlay"></div>
+         </div>
+         <div class="hero-content">
+           <h2 class="hero-title">Welcome to StoryStack!</h2>
+           <p class="hero-subtitle">
+             Discover your next favorite book from our carefully curated
+             collection.
+           </p>
+           <p class="hero-description">
+             We offer a wide range of books across various genres including
+             Fiction, Non-Fiction, Mystery, and Self-Help.
+           </p>
+           <div class="cta-section">
+             <a href="products.php" class="btn btn-primary">
+               <i class="fas fa-book-reader"></i>
+               Browse Our Collection
+             </a>
+           </div>
+         </div>
+       </section>
 
-        <div class="features">
-          <div class="feature">
-            <h3>Wide Selection</h3>
-            <p>Choose from our diverse collection of books</p>
-          </div>
-          <div class="feature">
-            <h3>Best Prices</h3>
-            <p>Affordable prices on all our books</p>
-          </div>
-          <div class="feature">
-            <h3>Easy Checkout</h3>
-            <p>Simple and secure ordering process</p>
-          </div>
-        </div>
-      </div>
-    </main>
 
-    <footer>
-      <p>&copy; 2025 StoryStack - BookStore. All rights reserved.</p>
-    </footer>
-  </div>
+       <!-- Features Section -->
+       <section class="features-section">
+         <h2 class="section-title">Why Choose StoryStack?</h2>
+         <div class="features">
+           <div class="feature">
+             <div class="feature-icon">
+               <i class="fas fa-book-open"></i>
+             </div>
+             <h3>Wide Selection</h3>
+             <p>
+               Choose from our diverse collection of books spanning every genre
+               imaginable
+             </p>
+           </div>
+           <div class="feature">
+             <div class="feature-icon">
+               <i class="fas fa-tags"></i>
+             </div>
+             <h3>Best Prices</h3>
+             <p>
+               Affordable prices on all our books with regular discounts and
+               special offers
+             </p>
+           </div>
+           <div class="feature">
+             <div class="feature-icon">
+               <i class="fas fa-shopping-bag"></i>
+             </div>
+             <h3>Easy Checkout</h3>
+             <p>
+               Simple and secure ordering process that takes just minutes to
+               complete
+             </p>
+           </div>
+         </div>
+       </section>
+     </main>
 
-  <script>
-    // Update cart count on page load
-    function updateCartCount() {
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const totalItems = cart.reduce(
-        (sum, item) => sum + item.quantity,
-        0
-      );
-      document.getElementById("cart-count").textContent = totalItems;
-    }
 
-    
-    function updateAuthLinks() {
-      const user = JSON.parse(localStorage.getItem("user"));
-      const authLinks = document.getElementById("auth-links");
+     <footer>
+       <p>&copy; 2025 StoryStack - BookStore. All rights reserved.</p>
+     </footer>
+   </div>
 
-      if (user) {
-        authLinks.innerHTML = `
-          <a href="about.html">About Us</a>
-          <span class="nav-divider">|</span>
-          <span class="user-email">${user.username}</span>
-          <span class="nav-divider">|</span>
-          <a href="#" onclick="logout(); return false;">Logout</a>
-        `;
-      } else {
-        authLinks.innerHTML = `
-          <a href="about.html">About Us</a>
-          <span class="nav-divider">|</span>
-          <a href="login.html">Login</a>
-          <span class="nav-divider">|</span>
-          <a href="signup.html">Sign Up</a>
-        `;
-      }
-    }
 
-    // Logout function
-    function logout() {
-      localStorage.removeItem("user");
-      window.location.href = "php/logout.php";
-    }
+   <script>
+     // Update cart count on page load
+     function updateCartCount() {
+       const cart = JSON.parse(localStorage.getItem("cart")) || [];
+       const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+       document.getElementById("cart-count").textContent = totalItems;
+     }
 
-    // Initialize page
-    updateCartCount();
-    updateAuthLinks();
-  </script>
-</body>
+
+     function updateAuthLinks() {
+       const user = JSON.parse(localStorage.getItem("user"));
+       const authLinks = document.getElementById("auth-links");
+       if (user) {
+         authLinks.innerHTML = `
+         <a href="about.html" class="nav-link">About Us</a>
+         <span class="nav-divider">|</span>
+         <span class="user-email"><i class="fas fa-user-circle"></i> ${user.username}</span>
+         <span class="nav-divider">|</span>
+         <a href="#" onclick="logout(); return false;" class="nav-link">Logout</a>
+       `;
+       } else {
+         authLinks.innerHTML = `
+         <a href="about.html" class="nav-link">About Us</a>
+         <span class="nav-divider">|</span>
+         <a href="login.html" class="nav-link">Login</a>
+         <span class="nav-divider">|</span>
+         <a href="signup.html" class="btn-signup">Sign Up</a>
+       `;
+       }
+     }
+
+
+     // Logout function
+     function logout() {
+       localStorage.removeItem("user");
+       window.location.href = "php/logout.php";
+     }
+
+
+     // Initialize page
+     updateCartCount();
+     updateAuthLinks();
+
+
+     // Navbar scroll effect
+     window.addEventListener("scroll", function () {
+       const header = document.querySelector("header");
+       if (window.scrollY > 50) {
+         header.classList.add("scrolled");
+       } else {
+         header.classList.remove("scrolled");
+       }
+     });
+   </script>
+ </body>
 </html>
